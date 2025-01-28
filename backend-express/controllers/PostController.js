@@ -1,6 +1,8 @@
 const prisma = require('../prisma/client');
 const { validationResult } = require('express-validator');
 const { nanoid } = require('nanoid');
+const fs = require('fs');
+const path = require('path');
 
 const findPosts = async (req, res) => {
   try {
@@ -87,4 +89,67 @@ const getPostById = async (req, res) => {
   }
 };
 
-module.exports = { findPosts, createPost, getPostById };
+const updatePost = async (req, res) => {
+  const { id } = req.params;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      success: false,
+      message: 'Validation error',
+      errors: errors.array(),
+    });
+  }
+
+  try {
+    const dataPost = {
+      title: req.body.title,
+      content: req.body.content,
+      updatedAt: new Date(),
+    };
+
+    if (req.file) {
+      dataPost.image = req.file.filename;
+
+      const post = await prisma.post.findUnique({
+        where: {
+          id: id,
+        },
+      });
+
+      if (post && post.image) {
+        const oldImagePath = path.join(process.cwd(), 'uploads', post.image);
+
+        if (fs.existsSync(oldImagePath)) {
+          fs.unlinkSync(oldImagePath);
+        } else {
+          console.log('file tidak ditemukan :', oldImagePath);
+        }
+      }
+    }
+
+    const post = await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: dataPost,
+    });
+
+    res.status(201).send({
+      success: true,
+      message: 'Post updated successfully',
+      data: {
+        id: post.id,
+        title: post.title,
+      },
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: 'internal server error : ' + err.message,
+    });
+  }
+};
+
+module.exports = { findPosts, createPost, getPostById, updatePost };
