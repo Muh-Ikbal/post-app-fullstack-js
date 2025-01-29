@@ -9,6 +9,7 @@ const {
   createPost,
   getPostById,
   updatePost,
+  deletePost,
 } = require('../controllers/PostController');
 
 router.get('/posts', findPosts);
@@ -17,5 +18,6 @@ router.post('/posts', upload.single('image'), validatedPost, createPost);
 
 router.get('/posts/:id', getPostById);
 router.put('/posts/:id', upload.single('image'), validatedPost, updatePost);
+router.delete('/posts/:id', deletePost);
 
 module.exports = router;

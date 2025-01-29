@@ -76,6 +76,13 @@ const getPostById = async (req, res) => {
         id: id,
       },
     });
+
+    if (!post) {
+      return res.status(404).send({
+        success: false,
+        message: 'Post not found',
+      });
+    }
     res.status(200).send({
       success: true,
       message: 'Get post by id successfully',
@@ -103,6 +110,18 @@ const updatePost = async (req, res) => {
   }
 
   try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!post) {
+      return res.status(404).send({
+        success: false,
+        message: 'update post gagal. Id tidak ditemukan',
+      });
+    }
     const dataPost = {
       title: req.body.title,
       content: req.body.content,
@@ -111,12 +130,6 @@ const updatePost = async (req, res) => {
 
     if (req.file) {
       dataPost.image = req.file.filename;
-
-      const post = await prisma.post.findUnique({
-        where: {
-          id: id,
-        },
-      });
 
       if (post && post.image) {
         const oldImagePath = path.join(process.cwd(), 'uploads', post.image);
@@ -129,7 +142,7 @@ const updatePost = async (req, res) => {
       }
     }
 
-    const post = await prisma.post.update({
+    const postUpdate = await prisma.post.update({
       where: {
         id: id,
       },
@@ -140,8 +153,8 @@ const updatePost = async (req, res) => {
       success: true,
       message: 'Post updated successfully',
       data: {
-        id: post.id,
-        title: post.title,
+        id: postUpdate.id,
+        title: postUpdate.title,
       },
     });
   } catch (err) {
@@ -152,4 +165,46 @@ const updatePost = async (req, res) => {
   }
 };
 
-module.exports = { findPosts, createPost, getPostById, updatePost };
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    if (post && post.image) {
+      const oldImage = path.join(process.cwd(), 'uploads', post.image);
+      if (fs.existsSync(oldImage)) {
+        fs.unlinkSync(oldImage);
+      } else {
+        console.log('file tidak ditemukan :', oldImage);
+      }
+    } else {
+      return res.status(404).send({
+        success: false,
+        message: 'Hapus post gagal. Id tidak ditemukan',
+      });
+    }
+    const deletePost = await prisma.post.delete({
+      where: {
+        id: id,
+      },
+    });
+    res.status(200).send({
+      success: true,
+      message: 'Post deleted successfully',
+      data: {
+        id: deletePost.id,
+        title: deletePost.title,
+      },
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: 'internal server error : ' + err.message,
+    });
+  }
+};
+
+module.exports = { findPosts, createPost, getPostById, updatePost, deletePost };
