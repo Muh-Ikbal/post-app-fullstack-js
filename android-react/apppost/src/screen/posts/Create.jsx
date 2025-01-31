@@ -1,28 +1,29 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  ToastAndroid,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
+
+import {launchImageLibrary} from 'react-native-image-picker';
+
+import Api from '../../services/api';
+
+import styles from '../../styles';
+
+import { handleErrors } from '../../utils/handleErrors';
+
 
 const PostCreate = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>App Post</Text>
+      <Text style={styles.text}>Create Post</Text>
+      
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#ffff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#000',
-  },
-});
 
 export default PostCreate;
