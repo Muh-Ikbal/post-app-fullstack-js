@@ -9,9 +9,17 @@ const styles = StyleSheet.create({
   form: {
     padding: 12,
   },
+  line: {
+    width: '100%',
+    height: 2,
+    backgroundColor: '#ddd',
+    marginTop: 15,
+  },
   upload: {
-    flexDirection: 'row',
+    flexDirection: 'column-reverse',
     justifyContent: 'space-evenly',
+    alignItems: 'center',
+    gap: 10,
     marginVertical: 20,
   },
   input: {
@@ -21,7 +29,7 @@ const styles = StyleSheet.create({
     margin: 10,
     marginBottom: 10,
     padding: 10,
-    borderRadius: 24,
+    borderRadius: 8,
   },
   textarea: {
     height: 150,
@@ -47,7 +55,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#000',
+  },
+  image: {
+    width: '100%',
+    height: 200,
+  },
 });
 
 export default styles;
-
