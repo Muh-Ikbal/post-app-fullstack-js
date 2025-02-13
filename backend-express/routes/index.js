@@ -11,13 +11,13 @@ const {
   updatePost,
   deletePost,
 } = require('../controllers/PostController');
-
+// post
 router.get('/posts', findPosts);
-//define route for post create
 router.post('/posts', upload.single('image'), validatedPost, createPost);
-
 router.get('/posts/:id', getPostById);
 router.put('/posts/:id', upload.single('image'), validatedPost, updatePost);
 router.delete('/posts/:id', deletePost);
+
+// login
 
 module.exports = router;

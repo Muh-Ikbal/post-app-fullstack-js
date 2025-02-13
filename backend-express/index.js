@@ -12,7 +12,11 @@ app.use(bodyParser.json());
 const port = 3000;
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.status(404).send({
+    success:false,
+    message:'Not found',
+    code:404,
+  });
 });
 
 app.use('/api', router);
