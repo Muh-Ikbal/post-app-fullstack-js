@@ -19,5 +19,6 @@ router.put('/posts/:id', upload.single('image'), validatedPost, updatePost);
 router.delete('/posts/:id', deletePost);
 
 // login
+router.post('/login')
 
 module.exports = router;
